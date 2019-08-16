@@ -83,6 +83,15 @@ def create_dialog():
         cb_language.addItem(lex, i+1)
     dialog_m.insertByName('cb_language_m', cb_language_m)
 
+    button_ok = dialog_m.createInstance('com.sun.star.awt.UnoControlButtonModel')
+    button_ok.PositionX = 10
+    button_ok.PositionY = 60
+    button_ok.Width  = 100
+    button_ok.Height = 14
+    button_ok.Name = 'button_ok'
+    button_ok.TabIndex = 1
+    button_ok.Label = 'OK'
+    dialog_m.insertByName('button_ok', button_ok)
 
     dialog = smgr.createInstance('com.sun.star.awt.UnoControlDialog')
     dialog.setModel(dialog_m)
