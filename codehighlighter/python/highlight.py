@@ -16,7 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import uno
+
 from pygments import styles
+from pygments.lexers import get_all_lexers
 from pygments.lexers import get_lexer_by_name
 from pygments.lexers import guess_lexer
 from pygments.styles import get_all_styles
@@ -43,7 +46,9 @@ def log(msg, mode='a'):
 log('','w')
 
 def create_dialog():
-    import uno
+    all_lexers = [lex[0] for lex in get_all_lexers()]
+    log(all_lexers)
+
     ctx = uno.getComponentContext()
     smgr = ctx.ServiceManager
     dialog_m = smgr.createInstance('com.sun.star.awt.UnoControlDialogModel')
@@ -70,11 +75,12 @@ def create_dialog():
     cb_language_m.Name = 'cb_language_m'
     log(str(dir(cb_language_m)))
     log(str(cb_language_m.StringItemList))
-    cb_language_m.Text = 'default'
+    cb_language_m.Text = 'automatic'
     cb_language = smgr.createInstance('com.sun.star.awt.UnoControlComboBox')
     cb_language.setModel(cb_language_m)
-    cb_language.addItem('l1', 0)
-    cb_language.addItem('l2', 1)
+    cb_language.addItem('automatic', 0)
+    for i, lex in enumerate(all_lexers):
+        cb_language.addItem(lex, i+1)
     dialog_m.insertByName('cb_language_m', cb_language_m)
 
 
@@ -83,8 +89,13 @@ def create_dialog():
     dialog.setVisible(True)
     dialog.execute()
 
-def highlightSourceCode(lang, style = 'friendly'):
-    create_dialog()
+    selected_lexer = cb_language_m.Text
+    log("sel: "+selected_lexer)
+    # assert selected_lexer in all_lexers
+    return selected_lexer
+
+def highlightSourceCode(lang, style = 'default'):
+    lang = create_dialog()
     ctx = XSCRIPTCONTEXT
     doc = ctx.getDocument()
     # Get the selected item
