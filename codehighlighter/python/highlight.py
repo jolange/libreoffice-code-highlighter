@@ -36,12 +36,52 @@ def to_rgbint(hex_str):
     return rgb(0, 0, 0)
 
 
-def log(msg):
-    with open("/tmp/code-highlighter.log", "a") as text_file:
+def log(msg, mode='a'):
+    with open("/tmp/code-highlighter.log", mode) as text_file:
         text_file.write(str(msg) + "\r\n\r\n")
 
+log('','w')
 
-def highlightSourceCode(lang, style):
+def create_dialog():
+    import uno
+    ctx = uno.getComponentContext()
+    smgr = ctx.ServiceManager
+    dialog_m = smgr.createInstance('com.sun.star.awt.UnoControlDialogModel')
+    dialog_m.Width = 200
+    dialog_m.Height = 100
+
+    label_language = dialog_m.createInstance('com.sun.star.awt.UnoControlFixedTextModel')
+    label_language.PositionX = 10
+    label_language.PositionY = 30
+    label_language.Width  = 100
+    label_language.Height = 14
+    label_language.Name = 'label_language'
+    label_language.TabIndex = 1
+    label_language.Label = 'Language: '
+    dialog_m.insertByName('label_language', label_language)
+
+    # not showing yet. https://github.com/aberlanas/salt-libreoffice-addon/blob/master/doooLib/doooWindowLib.py
+    cb_language_m = dialog_m.createInstance('com.sun.star.awt.UnoControlComboBoxModel')
+    cb_language_m.Dropdown = True
+    cb_language_m.PositionX = 60
+    cb_language_m.PositionY = 30
+    cb_language_m.Width  = 100
+    cb_language_m.Height = 14
+    cb_language_m.Name = 'cb_language_m'
+    log(str(dir(cb_language_m)))
+    log(str(cb_language_m.StringItemList))
+    cb_language_m.Text = 'default'
+    cb_language = smgr.createInstance('com.sun.star.awt.UnoControlComboBox')
+    cb_language.setModel(cb_language_m)
+    cb_language.addItem('l1', 0)
+    cb_language.addItem('l2', 1)
+    dialog_m.insertByName('cb_language_m', cb_language_m)
+
+
+    dialog = smgr.createInstance('com.sun.star.awt.UnoControlDialog')
+    dialog.setModel(dialog_m)
+    dialog.setVisible(True)
+    dialog.execute()
 
 def highlightSourceCode(lang, style = 'friendly'):
     create_dialog()
