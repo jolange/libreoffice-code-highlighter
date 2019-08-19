@@ -47,6 +47,40 @@ log('','w')
 
 def create_dialog():
     all_lexers = [lex[0] for lex in get_all_lexers()]
+    all_styles = list(get_all_styles())
+
+    ctx = uno.getComponentContext()
+    smgr = ctx.ServiceManager
+    dialog_provider = smgr.createInstance("com.sun.star.awt.DialogProvider")
+    dialog = dialog_provider.createDialog("vnd.sun.star.extension://javahelps.codehighlighter/dialogs/CodeHighlighter.xdl")
+
+    cb_lang = dialog.getControl('cb_lang')
+    cb_style = dialog.getControl('cb_style')
+
+    cb_lang.addItem('automatic', 0)
+    cb_lang.Text = 'automatic'
+    for i, lex in enumerate(all_lexers):
+        cb_lang.addItem(lex, i+1)
+
+    if 'default' in all_styles:
+        cb_style.Text = 'default'
+    for i, style in enumerate(all_styles):
+        cb_style.addItem(style, i)
+
+    dialog.setVisible(True)
+    # 0: canceled, 1: OK
+    if dialog.execute() == 0:
+        return
+
+    lang = cb_lang.Text
+    style = cb_style.Text
+    assert lang in all_lexers, 'no valid language: ' + lang
+    assert style in all_styles, 'no valid style: ' + style
+
+    highlightSourceCode(lang, style)
+
+def create_dialog_old():
+    all_lexers = [lex[0] for lex in get_all_lexers()]
     log(all_lexers)
 
     ctx = uno.getComponentContext()
@@ -104,7 +138,6 @@ def create_dialog():
     return selected_lexer
 
 def highlightSourceCode(lang, style = 'default'):
-    lang = create_dialog()
     ctx = XSCRIPTCONTEXT
     doc = ctx.getDocument()
     # Get the selected item

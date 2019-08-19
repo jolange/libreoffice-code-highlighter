@@ -43,7 +43,7 @@
                                 <value xml:lang="en">Highlight Code</value>
                             </prop>
                             <prop oor:name="URL" oor:type="xs:string">
-                                <value>vnd.sun.star.script:codehighlighter.oxt|python|highlight.py$highlight_automatic_default?language=Python&amp;location=user:uno_packages</value>
+                                <value>vnd.sun.star.script:codehighlighter.oxt|python|highlight.py$create_dialog?language=Python&amp;location=user:uno_packages</value>
                             </prop>
                             <prop oor:name="Target" oor:type="xs:string">
                                 <value>_self</value>
