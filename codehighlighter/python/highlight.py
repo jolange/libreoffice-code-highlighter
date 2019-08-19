@@ -26,6 +26,29 @@ from pygments.styles import get_all_styles
 import os
 
 
+# import re
+
+# all_lexers = tuple(lex[0] for lex in get_all_lexers())
+# all_styles = tuple(get_all_styles())
+# # create functions for all languages and export them
+# fun = 'def highlight_{0}_{2}(*args): highlightSourceCode("{1}", "{2}")'
+# functions_to_export = []
+# for lang in all_lexers:
+#     # build valid function name
+#     fun_name = lang.lower()
+#     fun_name = re.sub('[^0-9a-zA-Z_]', '_', fun_name)
+
+#     style = 'default'
+
+#     log(fun.format(fun_name, lang, style))
+#     # create the function
+#     exec(fun.format(fun_name, lang, 'default'))
+#     exec("functions_to_export.append(highlight_{0}_{1})".format(fun_name, style))
+
+# g_exportedScripts = tuple(functions_to_export)
+# log(g_exportedScripts)
+
+
 def rgb(r, g, b):
     return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
 
