@@ -168,9 +168,15 @@ def highlightSourceCode(lang, style, colorize_bg=False):
             highlight_code(code, cursor, lang, style)
     elif hasattr(selected_item, 'SupportedServiceNames') and 'com.sun.star.text.TextCursor' in selected_item.SupportedServiceNames:
         # LO Impress text selection
+        # this somehow does not work at all properly...
+        log("LO Impress text selection")
         code_block = selected_item
+        if bg_color:
+            code_block.CharBackColor = to_rgbint(bg_color)
         code = code_block.getString()
         cursor = code_block.getText().createTextCursorByRange(code_block)
+        log(code)
+        log(cursor)
         cursor.goLeft(0, False)
         highlight_code(code, cursor, lang, style)
 
@@ -191,15 +197,19 @@ def highlight_code(code, cursor, lang, style):
             else:
                 raise
     for tok_type, tok_value in lexer.get_tokens(code):
+        log(str(tok_type) + " " + tok_value)
         cursor.goRight(len(tok_value), True)  # selects the token's text
         try:
+            log(" colorizing")
             tok_style = style.style_for_token(tok_type)
             cursor.CharColor = to_rgbint(tok_style['color'])
             cursor.CharWeight = W_BOLD if tok_style['bold'] else W_NORMAL
             cursor.CharPosture = SL_ITALIC if tok_style['italic'] else SL_NONE
         except:
+            log(" NOT")
             pass
         finally:
+            log(" delecting")
             cursor.goRight(0, False)  # deselects the selected text
 
 
